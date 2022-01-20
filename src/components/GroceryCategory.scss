@@ -1,0 +1,10 @@
+.category-container {
+    max-width: 50%;
+    .ant-card {
+        max-width: 100%;
+    
+        .category-item {
+            width: 100%;
+        }
+    }
+}
