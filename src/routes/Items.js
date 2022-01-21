@@ -47,9 +47,11 @@ const Items = () => {
 
   let groceryLists = useSelector((state) => {
     console.log("info", state.firestore)
-    return state.firestore.ordered.groceryLists
+    return state.firestore.ordered.groceryLists;
   });
   console.log("groceryLists", groceryLists, categories);
+
+  groceryLists = Object.values(groceryLists)?.sort((a, b) => a.date?.toDate() < b.date?.toDate() ? 1 : -1)
 
   const [itemToEdit, setItemToEdit] = useState({});
   const [errors, setErrors] = useState(0);
