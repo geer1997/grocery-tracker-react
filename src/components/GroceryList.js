@@ -50,6 +50,7 @@ const GroceryList = ({ listId, displayName, categories, handleEdit }) => {
     items = items?.map((item) => {
         return {
             ...item,
+            groceryList: listId,
             categoryObject: categories?.find((category) => category.id === item.category)
         }
     })
@@ -61,18 +62,6 @@ const GroceryList = ({ listId, displayName, categories, handleEdit }) => {
         }
     })
 
-    console.log("categories items", categories);
-
-
-    // const categoryItems = [];
-    // categoryItems.forEach(item => !categoryItems.includes(item.category) && categoryItems.push(item.category));
-
-    const handleEditItem = (itemID) => {
-        const item = items.find(it => it.id === itemID);
-        item.groceryList = listId
-        handleEdit(item);
-    }
-
     return (
         <Row>
             <Col className="gutter-row" span={24}>
@@ -80,11 +69,12 @@ const GroceryList = ({ listId, displayName, categories, handleEdit }) => {
                     <Row gutter={[16, 24]}>
                         {categories &&
                             Object.values(categories).map((category) => (
+                                category.items && category.items.length > 0 &&
                                 <GroceryCategory
                                     key={category.id}
                                     title={category.name}
                                     items={category.items}
-                                    handleEditItem={handleEditItem}
+                                    handleEditItem={handleEdit}
                                 />
                             ))}
                     </Row>

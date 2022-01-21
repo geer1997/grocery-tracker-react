@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Button, Card, Col, Divider, Row, Tooltip } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-const GroceryItem = ({ isDone, title, quantity, createdBy, itemID, handleEditItem }) => {
+const GroceryItem = ({ isDone, title, quantity, createdBy, itemID, groceryList, handleEditItem, handleRemoveItem }) => {
     const [isGroceryItemDone, setGroceryItemDone] = useState(isDone);
     const firestore = useFirestore();
     const { uid } = useSelector(state => state.firebase.auth);
@@ -15,7 +15,7 @@ const GroceryItem = ({ isDone, title, quantity, createdBy, itemID, handleEditIte
     const handleChange = (event) => {
         if (event.currentTarget.type === "checkbox") {
             setGroceryItemDone(!isGroceryItemDone);
-            firestore.collection("items").doc(itemID).update({
+            firestore.collection('grocery-lists').doc(groceryList).collection("items").doc(itemID).update({
                 isDone: !isGroceryItemDone
             })
         }
@@ -45,12 +45,24 @@ const GroceryItem = ({ isDone, title, quantity, createdBy, itemID, handleEditIte
                     <Row gutter={16} className="option-button-row">
                         <Col span={12}>
                             <Tooltip title="Editar item">
-                                <Button type="primary" shape="circle" icon={<EditOutlined />}  onClick={() => handleEditItem(itemID)} />
+                                <Button
+                                    type="primary"
+                                    shape="circle"
+                                    icon={<EditOutlined />}
+                                    onClick={() => handleEditItem(itemID)}
+                                    disabled={isDone}
+                                />
                             </Tooltip>
                         </Col>
                         <Col span={12}>
                             <Tooltip title="Eliminar item">
-                                <Button type="primary" shape="circle" icon={<DeleteOutlined />}/>
+                                <Button
+                                    type="primary"
+                                    shape="circle"
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => handleRemoveItem(itemID)}
+                                    disabled={isDone}
+                                />
                             </Tooltip>
                         </Col>
                     </Row>

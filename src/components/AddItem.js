@@ -18,8 +18,8 @@ const AddItem = ({ categories, groceryLists, itemToEdit }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (itemToEdit) {
-      console.log("the is an item to edit", itemToEdit)
+    console.log("the is an item to edit", Object.entries(itemToEdit).length > 0)
+    if (Object.entries(itemToEdit).length > 0 ) {
       form.setFieldsValue({
         ...itemToEdit
       });
@@ -107,7 +107,7 @@ const AddItem = ({ categories, groceryLists, itemToEdit }) => {
   };
 
   const onReset = () => {
-    itemToEdit = {};
+    itemToEdit = null;
     form.resetFields();
   };
 
@@ -149,7 +149,7 @@ const AddItem = ({ categories, groceryLists, itemToEdit }) => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            {itemToEdit ? 'Actualizar' : 'Crear'}
+            {Object.entries(itemToEdit).length > 0 ? 'Actualizar' : 'Crear'}
           </Button>
           <Button htmlType="button" onClick={onReset}>
             Reset

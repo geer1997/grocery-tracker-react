@@ -57,7 +57,9 @@ const Items = () => {
   
   const handleEdit = (item) => {
     console.log("handling item", item)
-    setItemToEdit(item);
+    if (!item.isDone) {
+      setItemToEdit(item);
+    }
     // useEffect(() => {
     //   console.log("is reloading")
     // }, [item]);
@@ -78,7 +80,7 @@ const Items = () => {
               itemToEdit={itemToEdit}
             />
           </Col>
-          <Col span={16}>
+          <Col span={16} style={{overflow: 'auto', height: '100%'}}>
             {groceryLists &&
               Object.values(groceryLists).map((gList) => (
                 <GroceryList

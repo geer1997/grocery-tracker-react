@@ -25,6 +25,21 @@ const GroceryCategory = ({ title, items, handleEditItem }) => {
     items = items?.sort((a, b) => a.name < b.name ? 1 : -1);
     items = items?.sort((a, b) => a.isDone > b.isDone ? 1 : -1);
 
+    const handleRemoveItem = (itemID) => {
+        console.log("item for remove", itemID);
+        const item = items.find(it => it.id === itemID);
+        console.log("is done item", item);
+        if (!item.isDone) {
+            firestore
+                  .collection("grocery-lists")
+                  .doc(item.groceryList)
+                  .collection('items')
+                  .doc(itemID)
+                  .delete().then(() => console.log('Item Removed'))
+        }
+    }
+
+
     return (
         <Col className="category-container">
             <div>
@@ -38,7 +53,9 @@ const GroceryCategory = ({ title, items, handleEditItem }) => {
                                     quantity={item.quantity}
                                     isDone={item.isDone}
                                     itemID={item.itemID}
+                                    groceryList={item.groceryList}
                                     handleEditItem={handleEditItem}
+                                    handleRemoveItem={handleRemoveItem}
                                 />
                             )) :
                             <div>
