@@ -37,15 +37,15 @@ const GroceryList = ({ listId, displayName, categories, handleEdit }) => {
             collection: `grocery-lists`,
             doc: listId,
             subcollections: [{ collection: 'items' }],
-            storeAs: 'groceryItems'
+            storeAs: `groceryItems${listId}`
         }
     ]);
 
     let items = useSelector((state) => {
-        console.log("info", state.firestore)
-        return state.firestore.ordered.groceryItems
+        console.log("info", listId, state.firestore)
+        return state.firestore.ordered[`groceryItems${listId}`]
     });
-    console.log("items", items);
+    console.log("items", listId, items);
 
     items = items?.map((item) => {
         return {

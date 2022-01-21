@@ -44,20 +44,46 @@ const AddItem = ({ categories, groceryLists, itemToEdit }) => {
   };
 
   const updateItem = (item, groceryList) => {
-    firestore
-      .collection("grocery-lists")
-      .doc(groceryList)
-      .collection('items')
-      .doc(itemToEdit.id)
-      .update(item)
-      .then((docRef) => {
-        console.log("result", docRef);
-        docRef.update({
-          itemID: docRef.id,
+    const itemToEditId = itemToEdit.id;
+    if (groceryList === itemToEdit.groceryList) {
+      firestore
+        .collection("grocery-lists")
+        .doc(groceryList)
+        .collection('items')
+        .doc(itemToEditId)
+        .update(item)
+        .then((docRef) => {
+          console.log("result", docRef);
+          docRef.update({
+            itemID: docRef.id,
+          });
+        }).catch(err => {
+          console.log("error", err)
         });
-      }).catch(err => {
-        console.log("error", err)
-      });
+    } else {
+      console.log("diferente list id")
+      firestore
+        .collection("grocery-lists")
+        .doc(groceryList)
+        .collection('items')
+        .add(item)
+        .then((docRef) => {
+          console.log("result", docRef);
+          docRef.update({
+            itemID: docRef.id,
+          }).then(() => {
+            firestore
+              .collection("grocery-lists")
+              .doc(itemToEdit.groceryList)
+              .collection('items')
+              .doc(itemToEditId)
+              .delete().then(() => console.log('Deleting from before'))
+          });
+
+        }).catch(err => {
+          console.log("error", err)
+        });
+    }
     // setPresentItem("");
   };
 
