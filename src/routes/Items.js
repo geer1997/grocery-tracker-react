@@ -1,5 +1,5 @@
 import { Divider, Card, Col, Row } from "antd";
-import React from "react";
+import React,  { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -51,6 +51,18 @@ const Items = () => {
   });
   console.log("groceryLists", groceryLists, categories);
 
+  const [itemToEdit, setItemToEdit] = useState({});
+  const [errors, setErrors] = useState(0);
+  
+  
+  const handleEdit = (item) => {
+    console.log("handling item", item)
+    setItemToEdit(item);
+    // useEffect(() => {
+    //   console.log("is reloading")
+    // }, [item]);
+  }
+
   return (
     <div>
       <h2><b>Productos a Comprar</b></h2>
@@ -60,9 +72,10 @@ const Items = () => {
         <Row gutter={16}>
           <Col span={6}>
             <AddItem
-              key="add-item"
+              key={itemToEdit}
               categories={categories}
               groceryLists={groceryLists}
+              itemToEdit={itemToEdit}
             />
           </Col>
           <Col span={16}>
@@ -73,6 +86,7 @@ const Items = () => {
                   categories={categories}
                   listId={gList.id}
                   displayName={gList.date.toDate().toLocaleString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  handleEdit={handleEdit}
                 />
               ))}
           </Col>

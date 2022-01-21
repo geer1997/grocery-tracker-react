@@ -9,7 +9,7 @@ import AddItem from "../components/AddItem";
 import GroceryItem from "../components/GroceryItem";
 import GroceryCategory from "../components/GroceryCategory";
 
-const GroceryList = ({ listId, displayName, categories }) => {
+const GroceryList = ({ listId, displayName, categories, handleEdit }) => {
     // const mapStateToProps = (state) => {
     //   const {
     //     items,
@@ -67,7 +67,11 @@ const GroceryList = ({ listId, displayName, categories }) => {
     // const categoryItems = [];
     // categoryItems.forEach(item => !categoryItems.includes(item.category) && categoryItems.push(item.category));
 
-
+    const handleEditItem = (itemID) => {
+        const item = items.find(it => it.id === itemID);
+        item.groceryList = listId
+        handleEdit(item);
+    }
 
     return (
         <Row>
@@ -80,6 +84,7 @@ const GroceryList = ({ listId, displayName, categories }) => {
                                     key={category.id}
                                     title={category.name}
                                     items={category.items}
+                                    handleEditItem={handleEditItem}
                                 />
                             ))}
                     </Row>

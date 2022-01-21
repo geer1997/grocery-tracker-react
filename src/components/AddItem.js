@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { useSelector } from "react-redux";
 import { Form, Input, Button, Select, Divider } from "antd";
@@ -6,23 +6,25 @@ import "antd/dist/antd.css";
 
 const { Option } = Select;
 
-const AddItem = ({ categories, groceryLists }) => {
-  const [presentItem, setPresentItem] = useState("");
+const AddItem = ({ categories, groceryLists, itemToEdit }) => {
   const firestore = useFirestore();
   const currentUser = useSelector((state) => {
     console.log("state", state);
     return state?.currentUser?.user
   });
 
-  
   console.log("uid", currentUser?.uid)
   const uid = currentUser?.uid;
+  const [form] = Form.useForm();
 
-  const handleChange = ({ currentTarget: { name, value } }) => {
-    if (name === "addItem") {
-      setPresentItem(value);
+  useEffect(() => {
+    if (itemToEdit) {
+      console.log("the is an item to edit", itemToEdit)
+      form.setFieldsValue({
+        ...itemToEdit
+      });
     }
-  };
+  });
 
   const addNewItem = (item, groceryList) => {
     firestore
@@ -38,37 +40,55 @@ const AddItem = ({ categories, groceryLists }) => {
       }).catch(err => {
         console.log("error", err)
       });
-    setPresentItem("");
+    // setPresentItem("");
   };
 
-  const [form] = Form.useForm();
+  const updateItem = (item, groceryList) => {
+    firestore
+      .collection("grocery-lists")
+      .doc(groceryList)
+      .collection('items')
+      .doc(itemToEdit.id)
+      .update(item)
+      .then((docRef) => {
+        console.log("result", docRef);
+        docRef.update({
+          itemID: docRef.id,
+        });
+      }).catch(err => {
+        console.log("error", err)
+      });
+    // setPresentItem("");
+  };
+
+
 
   const onFinish = (values) => {
     console.log(values);
     const groceryList = values.groceryList;
     delete values.groceryList
-    addNewItem({
-      ...values,
-      isDone: false,
-      createdBy: uid,
-    }, groceryList)
+    if (itemToEdit) {
+      updateItem({
+        ...values
+      }, groceryList);
+    } else {
+      addNewItem({
+        ...values,
+        isDone: false,
+        createdBy: uid,
+      }, groceryList);
+    }
   };
 
   const onReset = () => {
+    itemToEdit = {};
     form.resetFields();
-  };
-
-  const onFill = () => {
-    form.setFieldsValue({
-      note: 'Hello world!',
-      gender: 'male',
-    });
   };
 
   return (
     <div>
       <h1><b>Añadir nuevo item</b></h1>
-      <Divider/>
+      <Divider />
       <Form form={form} name="control-hooks" onFinish={onFinish}>
         <Form.Item name="groceryList" label="Lista" rules={[{ required: true }]}>
           <Select
@@ -103,13 +123,10 @@ const AddItem = ({ categories, groceryLists }) => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Submit
+            {itemToEdit ? 'Actualizar' : 'Crear'}
           </Button>
           <Button htmlType="button" onClick={onReset}>
             Reset
-          </Button>
-          <Button type="link" htmlType="button" onClick={onFill}>
-            Fill form
           </Button>
         </Form.Item>
       </Form>

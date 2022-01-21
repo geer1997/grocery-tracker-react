@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { Button, Card, Col, Divider, Row, Tooltip } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-const GroceryItem = ({ isDone, title, quantity, createdBy, itemID }) => {
+const GroceryItem = ({ isDone, title, quantity, createdBy, itemID, handleEditItem }) => {
     const [isGroceryItemDone, setGroceryItemDone] = useState(isDone);
     const firestore = useFirestore();
     const { uid } = useSelector(state => state.firebase.auth);
@@ -20,13 +20,14 @@ const GroceryItem = ({ isDone, title, quantity, createdBy, itemID }) => {
             })
         }
     };
+
     return (
-        <div class="item-container" style={{
+        <div className="item-container" style={{
             textDecoration: isGroceryItemDone && "line-through",
             opacity: isGroceryItemDone ? 0.5 : 1,
 
         }}>
-            <Row class="item-container">
+            <Row className="item-container">
                 <Col span={9}>
                     <input
                         type="checkbox"
@@ -41,15 +42,15 @@ const GroceryItem = ({ isDone, title, quantity, createdBy, itemID }) => {
                         quantity ? quantity + ' unidades' : ''}
                 </Col>
                 <Col span={6}>
-                    <Row gutter={16} class="option-button-row">
+                    <Row gutter={16} className="option-button-row">
                         <Col span={12}>
-                            <Tooltip title="search">
-                                <Button type="primary" shape="circle" icon={<EditOutlined />} />
+                            <Tooltip title="Editar item">
+                                <Button type="primary" shape="circle" icon={<EditOutlined />}  onClick={() => handleEditItem(itemID)} />
                             </Tooltip>
                         </Col>
                         <Col span={12}>
-                            <Tooltip title="search">
-                                <Button type="primary" shape="circle" icon={<DeleteOutlined />} />
+                            <Tooltip title="Eliminar item">
+                                <Button type="primary" shape="circle" icon={<DeleteOutlined />}/>
                             </Tooltip>
                         </Col>
                     </Row>

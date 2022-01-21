@@ -5,7 +5,7 @@ import { Card, Col, Row } from "antd";
 import './GroceryCategory.scss'
 import GroceryItem from "./GroceryItem";
 
-const GroceryCategory = ({ title, items }) => {
+const GroceryCategory = ({ title, items, handleEditItem }) => {
     // const [isGroceryItemDone, setGroceryItemDone] = useState(isDone);
     const firestore = useFirestore();
     const { uid } = useSelector(state => state.firebase.auth);
@@ -38,6 +38,7 @@ const GroceryCategory = ({ title, items }) => {
                                     quantity={item.quantity}
                                     isDone={item.isDone}
                                     itemID={item.itemID}
+                                    handleEditItem={handleEditItem}
                                 />
                             )) :
                             <div>
